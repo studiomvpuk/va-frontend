@@ -1,0 +1,9 @@
+node_modules/
+.next/
+out/
+coverage/
+storybook-static/
+.env
+.env.local
+*.log
+src/lib/api-types.ts

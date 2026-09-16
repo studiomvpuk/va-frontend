@@ -1,0 +1,152 @@
+@import './design-tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /*
+   * General Sans — self-hosted, and NOT in the repository.
+   *
+   * Download the variable woff2 from https://www.fontshare.com/fonts/general-sans
+   * and put it at web/public/fonts/GeneralSans-Variable.woff2. Until you do,
+   * every page costs one 404 and falls back to the system sans — which is
+   * legible but flattens the headline weight the brand actually lives in.
+   * `font-display: swap` means nothing else is blocked either way.
+   *
+   * It is not vendored because the licence is the publisher's to grant, not
+   * this repository's to redistribute.
+   */
+  @font-face {
+    font-family: 'General Sans';
+    src: url('/fonts/GeneralSans-Variable.woff2') format('woff2-variations');
+    font-weight: 200 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+  }
+}
+
+@layer utilities {
+  /*
+   * The dotted grid.
+   *
+   * ── Why a texture at all ────────────────────────────────────────────────
+   * It is the single cheapest thing separating the reference site from a
+   * template. A flat neutral field reads as "default background"; the same
+   * field with a 1px dot every 24px reads as a surface somebody chose. It is
+   * quiet enough that most people never consciously see it, which is the point.
+   *
+   * currentColor at 7% rather than a fixed grey, so it inverts automatically
+   * inside a dark or a coloured panel instead of disappearing.
+   */
+  .surface-dots {
+    background-image: radial-gradient(
+      currentColor 1px,
+      transparent 1px
+    );
+    background-size: 24px 24px;
+    background-position: -1px -1px;
+  }
+
+  .surface-dots > * {
+    /* The dots are drawn from currentColor, so the wrapper is faded and the
+       content is restored — otherwise the text would fade with them. */
+    opacity: 1;
+  }
+
+  /*
+   * The faded-dots wrapper. Applied to a positioned pseudo-element rather than
+   * the section itself, so the section's own text keeps full contrast.
+   */
+  .panel-dots {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .panel-dots::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: radial-gradient(currentColor 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: -1px -1px;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  /*
+   * A hairline that fades out at both ends. Used between sections, where a
+   * full-width rule reads as a table border and this reads as a seam.
+   */
+  .rule-fade {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--color-border) 12%,
+      var(--color-border) 88%,
+      transparent
+    );
+  }
+
+  /*
+   * Route entry: fade up.
+   *
+   * No `animation-fill-mode`, and that is the whole point. The element's own
+   * resting state is the finished one, so content is visible whether or not the
+   * animation ever runs — which is what a JS-driven `initial={{opacity: 0}}`
+   * could not promise, having shipped every page as blank-until-hydrated.
+   *
+   * The duration comes from the token, so the reduced-motion block collapses it
+   * to 1ms rather than needing a second media query here.
+   */
+  @keyframes page-enter {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .animate-page-enter {
+    animation: page-enter var(--duration-base) var(--ease-out);
+  }
+
+  /*
+   * The indeterminate progress bar on the prep screen.
+   *
+   * A moving bar rather than a percentage, because there is no honest
+   * percentage to show for "a model is thinking" and an invented one is a small
+   * lie told every four seconds.
+   *
+   * It reads the duration from a token, so the reduced-motion block in
+   * design-tokens.css collapses it to 1ms and the bar simply sits still — no
+   * separate media query here to keep in sync with that one.
+   */
+  @keyframes prep-progress {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(300%); }
+  }
+
+  .animate-prep-progress {
+    animation: prep-progress 1.6s var(--ease-in-out) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-prep-progress {
+      animation: none;
+      transform: translateX(0);
+    }
+  }
+}

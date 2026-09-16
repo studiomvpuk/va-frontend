@@ -1,0 +1,388 @@
+/* ============================================================================
+   Job Application Assistant — Design Tokens
+   Derived from: Design_System_Base44_Reference.md + the 9 approved screens.
+
+   This file is the single source of truth for colour, type, spacing, radius
+   and motion. Nothing in the codebase hardcodes a hex value, a duration or an
+   easing curve — everything references a token defined here.
+
+   Tailwind consumes these via tailwind.config.ts (see PRD §3.6).
+   ========================================================================= */
+
+:root {
+  /* ---------------------------------------------------------------------
+     COLOUR — SURFACES
+
+     Warm neutrals, measured off base44.com rather than approximated. The page
+     is a warm off-white; sections alternate between it, a slightly deeper
+     grey, a warm sand, and pure white. That alternation is most of what makes
+     the reference site feel built rather than templated — a single flat
+     background for a whole page is the thing that reads as generic.
+
+     There is no dark page. An earlier version of this file made the marketing
+     site near-black, which was never what the reference does: base44.com's body
+     is #F9F8F6. Dark survives below as a PANEL register, for one section at a
+     time, which is how the reference uses it too.
+     --------------------------------------------------------------------- */
+  --color-bg:               #F9F8F6;  /* the page — warm off-white          */
+  --color-bg-muted:         #EEECEB;  /* the alternating section            */
+  --color-bg-sand:          #E2DED7;  /* warmer still — stat blocks, quotes */
+  --color-surface:          #FFFFFF;  /* cards, panels, inputs              */
+  --color-surface-sunken:   #F2F0EC;  /* inset areas, textarea wells        */
+  --color-bg-dark:          #14141A;  /* the dark PANEL, not the page       */
+  --color-bg-dark-raised:   #1E1E24;  /* raised inside a dark panel         */
+
+  /* ---------------------------------------------------------------------
+     COLOUR — THE PALETTE
+
+     The correction that mattered most. A previous version of this file had
+     exactly one accent and a rule saying never use a second, which produced a
+     two-colour site: near-black and orange. The reference is not that. It runs
+     large fields of saturated colour — a full-bleed indigo section, a full-bleed
+     orange pricing panel, warm sand statistic blocks, photographic panels —
+     against a quiet warm neutral.
+
+     The discipline is not "one colour". It is: colour arrives as a WHOLE
+     SECTION, not as scattered highlights, and one section owns one colour.
+     --------------------------------------------------------------------- */
+
+  /* Indigo — the primary large field. */
+  --color-indigo:           #3950E6;
+  --color-indigo-hover:     #2F44CE;
+  --color-indigo-subtle:    #E4E7FC;
+  --color-indigo-text:      #3950E6;  /* 5.71:1 on the page — passes as text */
+  --color-on-indigo:        #FFFFFF;  /* 6.06:1                              */
+
+  /* Orange — the accent, and the second large field. */
+  --color-accent:           #FF6A00;
+  --color-accent-hover:     #F06200;
+  --color-accent-active:    #E25C00;
+  --color-accent-subtle:    #FFEDE0;
+  /*
+   * Orange is a FIELD colour, not a text colour: #FF6A00 on the page is
+   * 2.71:1. Text that needs to read as orange uses the darkened version.
+   */
+  --color-accent-text:      #B64B00;  /* 4.62:1 on --color-accent-subtle     */
+  --color-accent-strong:    #BD4F00;  /* 4.62:1 on the page                  */
+  --color-accent-ring:      rgba(255, 106, 0, 0.32);
+
+  /*
+   * Ink on orange, white on indigo — and that split is not a preference.
+   * White on #FF6A00 is 2.87:1 and fails at any size; near-black is 6.68:1.
+   * The reference site does exactly this, which is a useful confirmation that
+   * it is a property of the colour rather than a matter of taste.
+   */
+  --color-on-accent:        #14141A;
+  --color-on-dark:          #FFFFFF;
+
+  /*
+   * Ink on a solid status fill — the danger button's hover state.
+   *
+   * Its own token because the answer flips between registers: white on the
+   * light #C0341E is 5.60:1, but on the dark register's lighter #E35E49 it is
+   * 3.52 and the near-black is 5.19. A call site cannot know which register it
+   * will render in, so it must not be the one choosing.
+   */
+  --color-on-danger:        #FFFFFF;
+
+  /* ---------------------------------------------------------------------
+     COLOUR — INK
+     --------------------------------------------------------------------- */
+  --color-text:             #0F0F0F;  /* body + headings on light            */
+  --color-text-on-dark:     #F5F5F3;  /* body on a dark panel                */
+  /*
+   * 4.60:1 on the darkest neutral this system has (--color-bg-sand), which is
+   * the constraint that sets it. It clears comfortably everywhere lighter.
+   */
+  --color-text-muted:       #63615E;
+  --color-text-inverse:     #FFFFFF;
+
+  /* ---------------------------------------------------------------------
+     COLOUR — LINES
+     Hairlines only. This system has almost no shadow; separation is done
+     with a 1px line and whitespace.
+     --------------------------------------------------------------------- */
+  --color-border:           #E4E1DC;
+  --color-border-strong:    #D2CEC7;  /* hover state on interactive borders  */
+  --color-border-dark:      #2A2A32;  /* hairlines inside a dark panel       */
+
+  /* ---------------------------------------------------------------------
+     COLOUR — STATUS
+     Deliberately desaturated. These are information, not decoration, and
+     they must never out-shout the accent.
+     --------------------------------------------------------------------- */
+  --color-positive:         #2E6B4C;  /* good fit score, "Signed"            */
+  --color-positive-subtle:  #E6F2EA;
+  --color-neutral:          #6B6B70;  /* "Applied", "Skipped", "General"     */
+  --color-neutral-subtle:   #F1F0EE;
+  --color-warning:          #A35A17;  /* borderline fit (was #B4641A, 3.91:1) */
+  --color-warning-subtle:   #FBF0E4;
+  --color-danger:           #C0341E;  /* destructive: rotate, revoke, delete */
+  --color-danger-subtle:    #FCEBE7;
+
+  /* Fit-score scale — drives the 0–10 badge colour.
+     < threshold → neutral (skipped). >= threshold → positive.
+     Within 0.5 of the threshold → warning (borderline, worth a look). */
+  --color-fit-high:         var(--color-positive);
+  --color-fit-borderline:   var(--color-warning);
+  --color-fit-low:          var(--color-neutral);
+
+  /* ---------------------------------------------------------------------
+     TYPOGRAPHY
+     Headline: bold geometric/rounded grotesk. The brand personality lives
+     in the headline weight and rounding — a plain system sans kills it.
+     General Sans (Fontshare, free, self-hosted) is the pick.
+     Body: same family at lighter weight for continuity.
+     Mono: credentials, API keys, code — never for prose.
+     --------------------------------------------------------------------- */
+  --font-display: 'General Sans', 'Söhne', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body:    'General Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Type scale — 1.25 ratio, tuned to the screens.
+     Page titles ("Profile & Sensitivity", "Dashboard") use --text-4xl. */
+  --text-xs:    0.75rem;   /* 12px — section labels (EXPERIENCE, FIELDS...) */
+  --text-sm:    0.875rem;  /* 14px — helper text, badges                    */
+  --text-base:  1rem;      /* 16px — body, inputs, table rows               */
+  --text-lg:    1.125rem;  /* 18px — card titles, nav                       */
+  --text-xl:    1.375rem;  /* 22px — sub-headings                           */
+  --text-2xl:   1.75rem;   /* 28px — "Create your account"                  */
+  --text-3xl:   2.25rem;   /* 36px — stat figures (34, 2, 6.0)              */
+  --text-4xl:   2.75rem;   /* 44px — page titles                            */
+  --text-hero:  clamp(2.75rem, 7vw, 5.5rem); /* marketing hero only         */
+
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  --leading-tight:  1.08;  /* headlines — short punchy statements           */
+  --leading-snug:   1.28;  /* sub-headings                                  */
+  --leading-normal: 1.55;  /* body copy                                     */
+
+  /*
+   * -0.04em, measured off the reference's h1 (-3.83px at 95.7px). The previous
+   * -0.022em is why the headlines here read as a system font set large rather
+   * than as display type.
+   */
+  --tracking-tight:  -0.04em;   /* large display type                       */
+  --tracking-normal: 0;
+  --tracking-label:  0.07em;    /* the small uppercase section labels       */
+
+  /* ---------------------------------------------------------------------
+     SPACING — 4px base
+     --------------------------------------------------------------------- */
+  --space-1:  0.25rem;   /*  4px */
+  --space-2:  0.5rem;    /*  8px */
+  --space-3:  0.75rem;   /* 12px */
+  --space-4:  1rem;      /* 16px */
+  --space-5:  1.25rem;   /* 20px */
+  --space-6:  1.5rem;    /* 24px */
+  --space-8:  2rem;      /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+  --space-24: 6rem;      /* 96px  — between marketing sections */
+  --space-32: 8rem;      /* 128px — generous vertical rhythm   */
+
+  /* ---------------------------------------------------------------------
+     RADIUS — 8–12px range throughout, pills for nav and badges
+     --------------------------------------------------------------------- */
+  --radius-sm:   6px;    /* badges, small chips        */
+  --radius-md:   10px;   /* inputs, buttons            */
+  --radius-lg:   14px;   /* cards, panels              */
+  --radius-xl:   20px;   /* large feature cards        */
+  --radius-pill: 999px;  /* nav pills, status badges   */
+
+  /* ---------------------------------------------------------------------
+     ELEVATION
+     Used sparingly. "Confidence over decoration" — a hairline border does
+     most of the work; shadow is reserved for things that genuinely float.
+     --------------------------------------------------------------------- */
+  --shadow-none:  none;
+  --shadow-sm:    0 1px 2px rgba(20, 20, 22, 0.04);
+  --shadow-md:    0 4px 16px rgba(20, 20, 22, 0.06);
+  --shadow-lg:    0 12px 40px rgba(20, 20, 22, 0.10);   /* modals, dropdowns */
+  --shadow-bar:   0 6px 28px rgba(14, 14, 16, 0.24);    /* floating nav bar  */
+
+  /* ---------------------------------------------------------------------
+     MOTION
+     The animation language is: quick, decisive, slightly overshooting on
+     entry, never bouncy. One easing curve does almost everything.
+     --------------------------------------------------------------------- */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);   /* the default — entries */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);   /* moves between states  */
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1); /* slider thumb, toggles */
+
+  --duration-instant: 90ms;   /* hover/press feedback                 */
+  --duration-fast:    160ms;  /* badge colour change, focus ring      */
+  --duration-base:    240ms;  /* page + card entries, the workhorse   */
+  --duration-slow:    380ms;  /* the shared-element nav pill          */
+  --duration-count:   600ms;  /* fit-score and stat count-up          */
+
+  --stagger-child:    40ms;   /* delay between siblings in a list     */
+
+  /* ---------------------------------------------------------------------
+     LAYOUT
+     --------------------------------------------------------------------- */
+  --container-app:       1180px;  /* app workspace max width */
+  --container-marketing: 1280px;
+  --container-prose:     680px;   /* agreement text, How to Use columns */
+  --gutter:              16px;    /* minimum side gutter on phones */
+  --header-height:       72px;
+}
+
+/* ===========================================================================
+   THE DARK PANEL
+
+   Applied to one section at a time with data-surface="dark" — never to a whole
+   page. That is the correction: this used to dress the entire marketing site,
+   which is not what the reference does and is not what anybody asked for.
+
+   Used sparingly it is the strongest contrast the system has, which is why it
+   is worth keeping for the one section that should stop somebody scrolling.
+   ========================================================================= */
+:root[data-theme='dark'],
+[data-surface='dark'] {
+  --color-bg:             var(--color-bg-dark);
+  --color-surface:        var(--color-bg-dark-raised);
+  --color-surface-sunken:  #0E0E13;
+  --color-bg-muted:        #1A1A21;
+  --color-bg-sand:         #23232B;
+  --color-text:           var(--color-text-on-dark);
+  --color-text-muted:      #A3A09C;
+  --color-border:         var(--color-border-dark);
+  --color-border-strong:   #3A3A44;
+
+  /* Foregrounds, remapped alongside the backgrounds they sit on. */
+  --color-neutral-subtle:  #1C1C20;
+  --color-neutral:         #85858A;
+  --color-positive-subtle: #16241D;
+  --color-positive:        #42996C;
+  --color-accent-subtle:   #331603;
+  --color-accent-text:     #FF8A3D;
+  /*
+   * Flips: the light register's text-safe orange is a DARKENED one, which is
+   * invisible on near-black. Here it has to go the other way. Same token, same
+   * meaning — "orange you can set a word in" — opposite direction.
+   */
+  --color-accent-strong:   #FF8A3D;
+  --color-warning:         #CC711D;
+  --color-warning-subtle:  #2F1C07;
+  --color-danger:          #E35E49;
+  --color-danger-subtle:   #3D1208;
+  --color-on-danger:       #151515;
+  --color-indigo-subtle:   #171C3D;
+  --color-indigo-text:     #93A1F5;
+}
+
+/* ===========================================================================
+   COLOUR PANELS
+
+   A section that owns a colour. `data-panel="indigo"` remaps the same surface
+   and ink tokens every component already uses, so a card inside an indigo
+   section needs no special case — it reads --color-surface and gets something
+   that works on indigo.
+
+   This is the mechanism that makes "a lot of colour" possible without a second
+   palette: the values are the same tokens, pointed somewhere else.
+   ========================================================================= */
+[data-panel='indigo'] {
+  --color-bg:             var(--color-indigo);
+  --color-surface:         rgba(255, 255, 255, 0.10);
+  --color-surface-sunken:  rgba(0, 0, 0, 0.12);
+  --color-text:           var(--color-on-indigo);
+  /* 0.85, not 0.76. Composited over the indigo, 0.76 is 4.20:1 and fails —
+     which the token-level contrast suite could not see, because it compares
+     hex values and this is an alpha over a panel. The suite now composites. */
+  --color-text-muted:      rgba(255, 255, 255, 0.85);
+  --color-border:          rgba(255, 255, 255, 0.20);
+  --color-border-strong:   rgba(255, 255, 255, 0.34);
+}
+
+[data-panel='orange'] {
+  --color-bg:             var(--color-accent);
+  --color-surface:         rgba(255, 255, 255, 0.16);
+  --color-surface-sunken:  rgba(0, 0, 0, 0.08);
+  --color-text:           var(--color-on-accent);
+  /*
+   * 0.82. The comment here used to claim 76% "still clears AA" — it does not,
+   * it is 4.31:1. Lighthouse caught it on the rendered page; the token suite
+   * could not, because it compares hex values and this is an alpha composited
+   * over a panel colour. It composites now.
+   *
+   * White at any opacity genuinely does not work on this orange: at full
+   * strength it is 2.87:1.
+   */
+  --color-text-muted:      rgba(20, 20, 26, 0.82);
+  --color-border:          rgba(20, 20, 26, 0.18);
+  --color-border-strong:   rgba(20, 20, 26, 0.32);
+}
+
+[data-panel='sand'] {
+  --color-bg:             var(--color-bg-sand);
+  --color-surface:        var(--color-bg);
+  --color-surface-sunken:  #D8D3CA;
+  --color-border:          #D2CEC7;
+  --color-border-strong:   #C3BEB4;
+}
+
+[data-panel='muted'] {
+  --color-bg:             var(--color-bg-muted);
+  --color-surface:        #FFFFFF;
+  --color-surface-sunken: var(--color-bg-sand);
+}
+
+/* ===========================================================================
+   REDUCED MOTION
+   Every animated property in the app resolves through these variables, so
+   this single block genuinely disables motion rather than approximating it.
+   Opacity transitions are kept at a near-instant duration so state changes
+   are still perceptible without movement.
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 1ms;
+    --duration-fast:    1ms;
+    --duration-base:    1ms;
+    --duration-slow:    1ms;
+    --duration-count:   1ms;
+    --stagger-child:    0ms;
+    --ease-spring:      linear;
+  }
+}
+
+/* ===========================================================================
+   BASE
+   ========================================================================= */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus is always visible and always uses the accent. Never `outline: none`
+   without a replacement — the VA-facing chat is keyboard-heavy. */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* The small uppercase card labels: EXPERIENCE, FIELDS & SENSITIVITY, etc. */
+.label-section {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
