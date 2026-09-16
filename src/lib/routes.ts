@@ -35,6 +35,14 @@ export const ROUTES: RouteDefinition[] = [
   { path: '/signup', visibility: 'signed-out' },
   { path: '/login', visibility: 'signed-out' },
   { path: '/va/login', visibility: 'signed-out' },
+  /*
+   * Reached only from an invitation link, never linked from the site. Listed
+   * anyway: this route was missing entirely for a while, and every invitation
+   * anyone sent led to a 404, because the link is assembled at runtime from
+   * `${origin}/accept-invite?token=…` rather than written as an href — so
+   * nothing here or in the tests could see it.
+   */
+  { path: '/accept-invite', visibility: 'signed-out' },
 
   // The Client workspace.
   { path: '/dashboard', visibility: 'client' },
