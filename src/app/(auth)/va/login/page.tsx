@@ -3,7 +3,6 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { AuthShell } from '@/components/auth/auth-shell';
 import { SignInForm } from '@/components/auth/sign-in-form';
-import { auth } from '@/lib/api';
 
 export const metadata: Metadata = {
   title: 'Assistant sign in',
@@ -43,7 +42,7 @@ export default function VaLoginPage() {
     >
       <Suspense fallback={null}>
         <SignInForm
-          authenticate={auth.vaLogin}
+          variant="va"
           fallbackPath="/chat"
           submitLabel="Sign in"
         />

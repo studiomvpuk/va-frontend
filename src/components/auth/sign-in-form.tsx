@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
 import { Button, Input } from '@/components/ui';
 import { useSession } from '@/lib/session';
-import { ApiError, type AuthUser } from '@/lib/api';
+import { ApiError, auth } from '@/lib/api';
 
 /**
  * Both sign-in forms, differing only in which endpoint they call.
@@ -19,15 +19,34 @@ import { ApiError, type AuthUser } from '@/lib/api';
  * else's, wearing our domain in the address bar during the hop. Only same-site
  * absolute paths are honoured.
  */
+/**
+ * Which sign-in this is. A string, not the function itself.
+ *
+ * It used to take `authenticate` — the API function — as a prop, and the two
+ * pages that render it are Server Components. A function cannot cross the
+ * server/client boundary in the App Router, so on the client the prop was not
+ * callable and every submit threw before it reached the network. The catch in
+ * `onSubmit` then reported "Could not reach the server", which sent everyone
+ * looking at CORS and deploys for a bug that was three lines away.
+ *
+ * A serializable discriminator cannot fail that way: the component picks the
+ * function on the client, where the function actually exists.
+ */
+const ENDPOINTS = {
+  client: auth.login,
+  va: auth.vaLogin,
+} as const;
+
 export function SignInForm({
-  authenticate,
+  variant,
   fallbackPath,
   submitLabel,
 }: {
-  authenticate: (input: { email: string; password: string }) => Promise<AuthUser>;
+  variant: keyof typeof ENDPOINTS;
   fallbackPath: string;
   submitLabel: string;
 }) {
+  const authenticate = ENDPOINTS[variant];
   const router = useRouter();
   const params = useSearchParams();
   const { setUser } = useSession();
@@ -48,16 +67,26 @@ export function SignInForm({
       setUser(user);
       router.replace(safeNext(params.get('next')) ?? fallbackPath);
     } catch (e) {
-      // Deliberately the same message for a wrong password and an unknown
-      // account. Distinguishing them turns the form into a way to find out
-      // which email addresses have accounts here.
-      setError(
-        e instanceof ApiError && e.status === 401
-          ? 'That email and password do not match.'
-          : e instanceof ApiError
-            ? e.message
-            : 'Could not reach the server. Check your connection and try again.',
-      );
+      if (e instanceof ApiError) {
+        // Deliberately the same message for a wrong password and an unknown
+        // account. Distinguishing them turns the form into a way to find out
+        // which email addresses have accounts here.
+        setError(
+          e.status === 401 ? 'That email and password do not match.' : e.message,
+        );
+      } else {
+        /*
+         * Anything that is not an ApiError never reached the API — a dropped
+         * connection, or a bug in this file. Those look identical to the person
+         * signing in, so the message stays vague, but the real error goes to the
+         * console rather than being swallowed.
+         *
+         * It was swallowed once, and a TypeError in our own code spent an
+         * afternoon impersonating a network outage.
+         */
+        console.error('[sign-in] request never completed:', e);
+        setError('Could not reach the server. Check your connection and try again.');
+      }
       setSubmitting(false);
     }
   }

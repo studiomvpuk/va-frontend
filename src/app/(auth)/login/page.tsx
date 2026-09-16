@@ -3,7 +3,6 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { AuthShell } from '@/components/auth/auth-shell';
 import { SignInForm } from '@/components/auth/sign-in-form';
-import { auth } from '@/lib/api';
 
 export const metadata: Metadata = {
   title: 'Sign in',
@@ -43,7 +42,7 @@ export default function LoginPage() {
     >
       <Suspense fallback={null}>
         <SignInForm
-          authenticate={auth.login}
+          variant="client"
           fallbackPath="/dashboard"
           submitLabel="Sign in"
         />
