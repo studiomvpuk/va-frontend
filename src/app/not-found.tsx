@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { PRODUCT } from '@/lib/site';
 
 /**
  * The 404.
@@ -23,9 +24,7 @@ export default function NotFound() {
     <main className="mx-auto flex min-h-dvh max-w-prose flex-col justify-center gap-8 px-4 py-16">
       <Link href="/" className="flex items-center gap-3 self-start">
         <span aria-hidden="true" className="h-2.5 w-2.5 rounded-pill bg-accent" />
-        <span className="font-display text-lg font-bold text-ink">
-          Job Application Assistant
-        </span>
+        <span className="font-display text-lg font-bold text-ink">{PRODUCT.name}</span>
       </Link>
 
       <div>

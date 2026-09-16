@@ -6,6 +6,7 @@ import type { ReactNode } from 'react';
 import { NavPills, NotificationBell, type NavItem } from '@/components/ui';
 import { HelpLink } from './help-link';
 import { AccountMenu } from './account-menu';
+import { PRODUCT } from '@/lib/site';
 
 /**
  * Ordered by how often it is opened, not by the order things were built.
@@ -51,7 +52,7 @@ export function AppShell({
               className="h-2.5 w-2.5 rounded-pill bg-accent"
             />
             <span className="font-display text-lg font-bold text-ink">
-              Job Application Assistant
+              {PRODUCT.name}
             </span>
           </Link>
 

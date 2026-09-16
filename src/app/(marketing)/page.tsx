@@ -5,6 +5,7 @@ import { Collage } from '@/components/marketing/collage';
 import { HeroExchange } from '@/components/marketing/hero-exchange';
 import { COLLAGE_CARDS } from '@/components/marketing/collage-cards';
 import { Section, SectionHeading } from '@/components/marketing/section';
+import { PRODUCT } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Hand over the applying, not your life',
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
     type: 'website',
     title: 'Hand over the applying, not your life',
     description: 'Delegate job applications to an assistant who never sees your profile.',
-    siteName: 'Job Application Assistant',
+    siteName: PRODUCT.name,
   },
   twitter: {
     card: 'summary_large_image',

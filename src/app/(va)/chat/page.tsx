@@ -12,6 +12,7 @@ import {
   type Application,
   type PolicyDecision,
 } from '@/lib/api';
+import { PRODUCT } from '@/lib/site';
 
 /**
  * Screen 7 — the VA chat.
@@ -140,8 +141,14 @@ export default function VaChatPage() {
           <div className="mx-auto flex h-[72px] max-w-app items-center justify-between gap-4 px-4 md:px-8">
             <div className="flex items-center gap-3">
               <span aria-hidden="true" className="h-2.5 w-2.5 rounded-pill bg-accent" />
+              {/* Named for whose surface this is. An assistant signing in
+                  should see their own workspace, not the Client's product with
+                  a suffix bolted on. */}
               <span className="font-display text-lg font-bold text-ink">
-                Job Application Assistant — VA
+                {PRODUCT.name}
+                <span className="ml-2 font-body text-base font-normal text-ink-muted">
+                  for assistants
+                </span>
               </span>
             </div>
             <div className="flex shrink-0 items-center gap-3">

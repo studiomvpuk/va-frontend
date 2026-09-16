@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { Card } from '@/components/ui';
 import { PageTransition } from '@/components/motion';
+import { PRODUCT } from '@/lib/site';
 
 /**
  * The frame around every credential form: sign up, sign in, assistant sign in.
@@ -34,7 +35,7 @@ export function AuthShell({
         <Link href="/" className="flex items-center gap-3 self-start">
           <span aria-hidden="true" className="h-2.5 w-2.5 rounded-pill bg-accent" />
           <span className="font-display text-lg font-bold text-ink">
-            Job Application Assistant
+            {PRODUCT.name}
           </span>
         </Link>
 

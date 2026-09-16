@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { PRODUCT } from '@/lib/site';
 
 /**
  * One header across every public page.
@@ -25,16 +26,14 @@ export function SiteHeader() {
         <Link href="/" className="flex min-w-0 items-center gap-2.5 sm:gap-3">
           <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-pill bg-accent" />
           {/*
-            Two spellings, because the full name plus "Sign in" overflows a
-            390px viewport and clips the only way back into an account. The
-            short one is not an abbreviation of convenience — below this width
-            the wordmark is competing with the thing people came to tap.
+            One spelling at every width. This used to be two — a short form for
+            phones, because the old four-word name plus "Sign in" overflowed a
+            390px viewport and clipped the only way back into an account. A
+            one-word name fits, so the workaround is gone rather than renamed.
+            `site.spec.ts` fails if the name grows back past one word.
           */}
-          <span className="truncate font-display text-base font-semibold sm:hidden">
-            Job Assistant
-          </span>
-          <span className="hidden truncate font-display text-lg font-semibold sm:inline">
-            Job Application Assistant
+          <span className="truncate font-display text-base font-semibold sm:text-lg">
+            {PRODUCT.name}
           </span>
         </Link>
 

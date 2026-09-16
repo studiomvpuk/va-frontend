@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { PRODUCT } from '@/lib/site';
 
 /**
  * The footer, and the only place every public route is listed.
@@ -60,7 +61,7 @@ export function SiteFooter() {
         <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-8 text-sm text-ink-muted">
           <span className="flex items-center gap-3">
             <span aria-hidden="true" className="h-2 w-2 rounded-pill bg-accent" />
-            Job Application Assistant
+            {PRODUCT.name}
           </span>
           <span>Manchester, UK</span>
         </div>

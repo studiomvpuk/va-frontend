@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { TOKEN_HEX, OG_HEX } from '@/styles/tokens';
+import { PRODUCT } from '@/lib/site';
 
 export const alt = 'Hand over the applying. Not your life.';
 export const size = { width: 1200, height: 630 };
@@ -45,9 +46,7 @@ export default function Image() {
               background: OG_HEX.accent,
             }}
           />
-          <div style={{ fontSize: 30, color: OG_HEX.textMuted }}>
-            Job Application Assistant
-          </div>
+          <div style={{ fontSize: 30, color: OG_HEX.textMuted }}>{PRODUCT.name}</div>
         </div>
 
         <div

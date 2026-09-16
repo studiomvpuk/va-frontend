@@ -1,4 +1,4 @@
-# Job Application Assistant — web
+# Understudy — web
 
 The Next.js front end. Two surfaces behind one deployment:
 
